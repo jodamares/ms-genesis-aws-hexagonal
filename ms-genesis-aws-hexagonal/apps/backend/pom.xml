@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.tdp.ms</groupId>
+        <artifactId>ms-organization-template</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>template-backend</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.groupId}:${project.artifactId}</name>
+
+    <dependencies>
+        <dependency><groupId>com.tdp.ms</groupId><artifactId>ms-organization-template-shared</artifactId></dependency>
+        <dependency><groupId>com.tdp.ms</groupId><artifactId>ms-organization-template-template</artifactId></dependency>
+
+        <dependency><groupId>com.tdp.genesis</groupId><artifactId>genesis-core</artifactId></dependency>
+        <dependency><groupId>com.tdp.genesis</groupId><artifactId>genesis-spring-core</artifactId></dependency>
+        <dependency><groupId>com.tdp.genesis</groupId><artifactId>genesis-spring-web-starter</artifactId><exclusions><exclusion><artifactId>antlr4-runtime</artifactId><groupId>org.antlr</groupId></exclusion></exclusions></dependency>
+        <dependency><groupId>com.tdp.genesis</groupId><artifactId>genesis-spring-error-starter</artifactId></dependency>
+        <dependency><groupId>com.tdp.genesis</groupId><artifactId>genesis-spring-openapi-starter</artifactId></dependency>
+        <dependency><groupId>com.tdp.genesis</groupId><artifactId>genesis-spring-webclient-starter</artifactId></dependency>
+
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-webflux</artifactId></dependency>
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-r2dbc</artifactId></dependency>
+        <dependency><groupId>org.postgresql</groupId><artifactId>r2dbc-postgresql</artifactId></dependency>
+        <dependency><groupId>org.springframework.cloud</groupId><artifactId>spring-cloud-starter-config</artifactId></dependency>
+        <dependency><groupId>org.springframework.cloud</groupId><artifactId>spring-cloud-starter-bootstrap</artifactId></dependency>
+        <dependency><groupId>net.logstash.logback</groupId><artifactId>logstash-logback-encoder</artifactId><version>${logstash-encoder.version}</version></dependency>
+        <dependency><groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>${commons-lang3.version}</version></dependency>
+
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope><exclusions><exclusion><groupId>org.junit.vintage</groupId><artifactId>junit-vintage-engine</artifactId></exclusion></exclusions></dependency>
+        <dependency><groupId>io.projectreactor</groupId><artifactId>reactor-test</artifactId><scope>test</scope></dependency>
+        <dependency><groupId>io.r2dbc</groupId><artifactId>r2dbc-h2</artifactId><scope>test</scope></dependency>
+        <dependency><groupId>org.mockito</groupId><artifactId>mockito-junit-jupiter</artifactId><scope>test</scope></dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>legacy-platform-starters</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.tdp.genesis</groupId>
+                    <artifactId>genesis-spring-audit-starter</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.tdp.genesis</groupId>
+                    <artifactId>genesis-spring-tokenonpremise-starter</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+    <build>
+        <sourceDirectory>main/java</sourceDirectory>
+        <testSourceDirectory>test/java</testSourceDirectory>
+        <resources>
+            <resource><directory>main/resources</directory></resource>
+        </resources>
+        <testResources>
+            <testResource><directory>test/resources</directory></testResource>
+        </testResources>
+        <finalName>template</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

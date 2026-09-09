@@ -1,0 +1,100 @@
+name: templateapp
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      secrets:
+        - maven_settings
+    image: ${APP_NAME}:local
+    container_name: ${APP_NAME}
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_CONFIG_IMPORT: "optional:file:/tmp/local-config/"
+      SPRING_CLOUD_CONFIG_ENABLED: "false"
+      SPRING_CLOUD_BOOTSTRAP_ENABLED: "false"
+      SERVER_PORT: 8080
+      SPRING_R2DBC_URL: r2dbc:postgresql://templateapp-postgres:5432/${POSTGRES_DB}?schema=${POSTGRES_SCHEMA}
+      SPRING_R2DBC_USERNAME: ${POSTGRES_USER}
+      SPRING_R2DBC_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: templateapp-postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_SCHEMA: ${POSTGRES_SCHEMA}
+      TEMPLATE_HTTP_CACHE_ENABLED: ${TEMPLATE_HTTP_CACHE_ENABLED:-true}
+      TEMPLATE_HTTP_CACHE_KEY_LIST_MAX_AGE: ${TEMPLATE_HTTP_CACHE_KEY_LIST_MAX_AGE:-5m}
+      TEMPLATE_HTTP_CACHE_SETTINGS_APP_MAX_AGE: ${TEMPLATE_HTTP_CACHE_SETTINGS_APP_MAX_AGE:-5m}
+      TEMPLATE_HTTP_CACHE_WIDGETS_MAX_AGE: ${TEMPLATE_HTTP_CACHE_WIDGETS_MAX_AGE:-5m}
+      JAVA_OPTS: ${JAVA_OPTS}
+    ports:
+      - "${APP_PORT}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - templateapp-net
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: templateapp-postgres
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      TZ: America/Lima
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - templateapp_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - templateapp-net
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: templateapp-pgadmin
+    restart: unless-stopped
+    profiles:
+      - tools
+    env_file:
+      - .env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - templateapp_pgadmin_data:/var/lib/pgadmin
+    networks:
+      - templateapp-net
+
+volumes:
+  templateapp_postgres_data:
+    name: templateapp_postgres_data
+  templateapp_pgadmin_data:
+    name: templateapp_pgadmin_data
+
+networks:
+  templateapp-net:
+    name: templateapp_net
+    driver: bridge
+
+secrets:
+  maven_settings:
+    file: ${MAVEN_SETTINGS_PATH}

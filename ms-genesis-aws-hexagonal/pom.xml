@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.tdp.genesis</groupId>
+        <artifactId>parent-spring</artifactId>
+        <version>3.0.2</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.tdp.ms</groupId>
+    <artifactId>ms-organization-template</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Organization template microservice multi-module Maven</description>
+
+    <modules>
+        <module>shared</module>
+        <module>src/template</module>
+        <module>apps/backend</module>
+    </modules>
+
+    <properties>
+        <java.version>17</java.version>
+        <maven.compiler.release>17</maven.compiler.release>
+        <spring-cloud.version>2022.0.0</spring-cloud.version>
+        <reactor.version>3.5.8</reactor.version>
+        <logstash-encoder.version>7.4</logstash-encoder.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-core</artifactId>
+                <version>${reactor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tdp.ms</groupId>
+                <artifactId>ms-organization-template-shared</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tdp.ms</groupId>
+                <artifactId>ms-organization-template-template</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

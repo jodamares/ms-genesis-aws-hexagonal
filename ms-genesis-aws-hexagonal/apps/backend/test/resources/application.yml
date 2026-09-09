@@ -1,0 +1,32 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  config:
+    import: optional:configserver:disabled
+  cloud:
+    config:
+      enabled: false
+    bootstrap:
+      enabled: false
+  r2dbc:
+    url: r2dbc:h2:mem:///templatedb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+
+template:
+  http-cache:
+    enabled: true
+    key-list-max-age: 5m
+    settings-app-max-age: 5m
+    widgets-max-age: 5m
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true

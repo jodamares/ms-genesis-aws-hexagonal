@@ -1,0 +1,9 @@
+package com.tdp.ms.shared.infrastructure.rest;
+
+import java.time.Instant;
+
+public record ApiError(String code, String message, String correlationId, Instant timestamp) {
+    public static ApiError of(String code, String message, String correlationId) {
+        return new ApiError(code, message, correlationId, Instant.now());
+    }
+}
